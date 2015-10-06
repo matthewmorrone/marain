@@ -1,7 +1,7 @@
-function Canvas() {
+function Canvas(w, h) {
     this.canvas = create("canvas")
-    this.canvas.width = this.width = 100
-    this.canvas.height = this.height = 100
+    this.canvas.width = this.width = w || 100
+    this.canvas.height = this.height = h || 100
     this.context = this.canvas.getContext("2d")
     this.c = this.context
     return this

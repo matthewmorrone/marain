@@ -55,7 +55,6 @@ function interval(str) {
     var left = parseInt(interval.left, 10);
     var rite = parseInt(interval.rite, 10);
     var step = parseInt(interval[3], 10) || 1;    
-    log(leftEncl, riteEncl, left, rite, step)
 
 	step = Math.abs(step);
 

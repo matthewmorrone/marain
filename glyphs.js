@@ -81,6 +81,8 @@ function Glyph(hash) {
     that.e[edge+""] = hash ? hash[i].toInt() : 0;
   });
   that.c = new Canvas();
+  that.h = hash;
+  // return that;
 }
 Glyph.prototype.debug = function() {
   var that = this;
@@ -103,20 +105,22 @@ function Freq() {
   return result;
 }
 Glyph.prototype.flipX = function() {
-  var h = $(this).hash().swap(0, 1)
-                        .swap(2, 4)
-    /*flip on x-axis*/  .swap(5, 6)
-                        .swap(7, 9)
-                        .swap(10, 11)
+  var h = this.hash().swap(0, 1)
+                     .swap(2, 4)
+ /*flip on x-axis*/  .swap(5, 6)
+                     .swap(7, 9)
+                     .swap(10, 11)
   var g = new Glyph(h);
+  return g;
 }
-Glyph.prototype.flipX = function() {
-  var h = $(this).hash().swap(0, 10)
-                        .swap(1, 11)
-    /*flip on y-axis*/  .swap(2, 7)
-                        .swap(3, 8)
-                        .swap(4, 5)
+Glyph.prototype.flipY = function() {
+  var h = this.hash().swap(0, 10)
+                     .swap(1, 11)
+ /*flip on y-axis*/  .swap(2, 7)
+                     .swap(3, 8)
+                     .swap(4, 5)
   var g = new Glyph(h);
+  return g;
 }
 
 Glyph.prototype.hasLoner = function() {
@@ -147,7 +151,7 @@ Glyph.prototype.hasLoner = function() {
 Glyph.prototype.render = function() {
   var c = this.c;
   var hash = this.hash();
-  var tempcolors = colors.clone(), tempcolor;
+  var tempcolors = colors.clone().shuffle(), tempcolor;
   // c.square(0, 0, 100, 100, "white")
 
   coords.each(function(xy, i) {
