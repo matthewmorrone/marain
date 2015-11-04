@@ -1,0 +1,146 @@
+<html>
+<head>
+<title>Glyphs</title>
+<style>
+* {
+	margin: 0px;
+	padding: 0px;
+}
+body {
+	background-color: black;
+}
+table, td {
+	border-collapse: collapse;
+}
+canvas {
+	margin: 5px;
+}
+ul, li {
+	list-style-type: none;
+	float: left;
+}
+li {
+	border: 1px solid green;
+	margin: 2px;
+}
+.selected {
+	border: 2px solid red;
+}
+#container {
+	margin-top: 5%;
+	margin-left: 10%;
+	/*border: 2px solid green;*/
+}
+ul {
+	clear: both;
+	float: left;
+}
+.glyph {
+
+}
+.pixel {
+	float: left;
+}
+.on {
+	background-color: white;
+}
+img {
+	margin-top: 2%;
+	margin-left: 10%;
+}
+.inverted {
+	-webkit-filter: invert(100%);
+}
+ul {
+	margin-top: 2%;
+	margin-left: 10%;
+	min-height: 100px;
+	width: 60%;
+}
+textarea {
+	float: left;
+	clear: both;
+	margin-top: 2%;
+	margin-left: 10%;
+}
+</style>
+
+</head>
+<body>
+<script src="js/jquery.js"></script>
+<script src="js/jquery.ui.js"></script>
+<script src="js/jquery.ui.multidraggable.js"></script>
+<script src="js/lodash.js"></script>
+<script src="js/backbone.js"></script>
+<script src="js/starch.js"></script>
+
+
+<script src="js/starch.array.js"></script>
+<script src="js/starch.canvas.js"></script>
+<script src="js/starch.element.js"></script>
+<script src="js/starch.interval.js"></script>
+<script src="js/starch.is.js"></script>	
+<script src="js/starch.number.js"></script>
+<script src="js/starch.random.js"></script>
+<script src="js/starch.string.js"></script>	
+
+
+
+
+<script src="codes.js"></script>	
+
+
+
+<script>
+var log = console.log.bind(console);
+(function () {
+	var i, len, methods = Object.getOwnPropertyNames(Array.prototype);
+	for (i = 0, len = methods.length; i < len; i += 1) {
+		if (arguments.constructor.prototype.hasOwnProperty(methods[i]) === false) {
+			arguments.constructor.prototype.define(methods[i], Array.prototype[methods[i]]);
+		}
+		if (NodeList.prototype.hasOwnProperty(methods[i]) === false) {
+			NodeList.prototype.define(methods[i], Array.prototype[methods[i]]);
+		}
+	}
+}());
+
+$(function() {
+	var i, j, k, d, e, li, ul = $("ul").eq(0)
+	for(i = 0; i < codes.length; i++) {
+		d = create("div", {"class":"glyph", "style": "height: 99px; width: 100px; border: 0px"})
+		for(j = 0; j < 3; j++) {
+			for(k = 0; k < 3; k++) {
+				e = create("div", {"class":"pixel", "style": "height: 29.33px; width: 29.33px; border: 2px solid green"})
+				d.append(e)
+			}
+		}
+		li = create("li")
+		li.append(d)
+		ul.append(li);
+	}
+	var code
+	for(i = 0; i < codes.length; i++) {
+		code = codes[i]
+		for(j = 0; j < code.length; j++) {
+			if (code[j] === "1") {
+				$(".glyph").eq(i).find(".pixel").eq(j).click()
+			}
+		}
+	}
+	$("img").click(function() {
+		$(this).toggleClass("inverted")
+	})
+	// $("textarea").val(codeString)
+})
+$(document).on("click", ".pixel", function() {
+	$(this).toggleClass("on")
+})
+
+</script>
+<img class="inverted" src="marain.png" />
+<ul></ul>
+<br />
+<!-- <textarea></textarea> -->
+</body>
+</html>

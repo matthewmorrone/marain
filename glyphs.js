@@ -178,3 +178,19 @@ Array.interval("[0.."+(Math.pow(2, edges.length) - 1)+"]").each(function(i) {
 
 
 
+
+
+
+// var i, c, j, k
+// for(i = 0; i < 9; i++) {
+//   c = new Canvas()
+//   c.square(0, 0, 100, 5, "green")
+
+//   for(j = 16.5; j < 100; j+=33) {
+//     for(k = 16.5; k < 100; k+=33) {
+//       c.circle(j, k, 15, 3, "blue", "white")
+//     }
+//   }
+
+//   $("ul").eq(1).append(c.canvas);
+// }

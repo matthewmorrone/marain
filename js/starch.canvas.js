@@ -28,14 +28,23 @@ Canvas.prototype.line = function(x1, y1, x2, y2, color, width) {
     this.c.closePath()
     return this
 }
-Canvas.prototype.square = function(x, y, e, w, color, fill) {
-    if (color == '') {
-        color = 'rgba(0, 0, 0, 0)'
+Canvas.prototype.circle = function(x, y, r, w, color, fill) {
+    this.c.beginPath();
+    this.c.arc(x, y, r, 0, 2 * Math.PI, false);
+    this.c.lineWidth = w || 5
+    this.c.strokeStyle = color || "white"
+    this.c.stroke()
+    if (fill) {
+        this.c.fillStyle = fill// || "black"
+        this.c.fill()
     }
+    return this
+}
+Canvas.prototype.square = function(x, y, e, w, color, fill) {
     this.c.beginPath()
     this.c.rect(x, y, e, e)
-    this.c.lineWidth = w
-    this.c.strokeStyle = color
+    this.c.lineWidth = w || 5
+    this.c.strokeStyle = color || "white"
     this.c.stroke()
     if (fill) {
         this.c.fillStyle = fill
