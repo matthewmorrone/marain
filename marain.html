@@ -5,43 +5,69 @@
 * {
 	margin: 0px;
 	padding: 0px;
+	font-family: calibri;
 }
 body {
 	background-color: black;
 }
-table, td {
+/*table, td {
 	border-collapse: collapse;
-}
+}*/
 canvas {
 	margin: 5px;
 }
-ul, li {
+.info {
+	/*float: left;*/
+	color: lightgray;
+	/*display: none;*/
+}
+.selected {
+	border: 1px solid red;
+	margin: 1px;
+}
+.on {
+	background-color: rgba(0, 0, 255, .75)
+}
+ol {
+	float: left;
+	margin-top: 2%;
+	margin-left: 10%;
+	min-height: 100px;
+	width: 60%;
 	list-style-type: none;
+
+}
+ul {
+	float: left;
+	margin-left: 10%;
+	margin-top: 2%;
+	background-color: white;
+	list-style-type: none;
+
+}
+ol li {
 	float: left;
 }
 li {
 	border: 1px solid green;
 	margin: 2px;
+	padding: 2px;
+	text-align: center;
+	list-style-type: none;
+
 }
-.selected {
-	border: 2px solid red;
-}
-#container {
-	margin-top: 5%;
-	margin-left: 10%;
-	/*border: 2px solid green;*/
-}
-ul {
-	clear: both;
-	float: left;
+th, td {
+	margin: 2px;
 }
 .glyph {
-
+	height: 99px; 
+	width: 100px; 
+	/*border: 2px;*/
 }
 .pixel {
 	float: left;
 }
-.on {
+.true, ul li {
 	background-color: white;
 }
 img {
@@ -51,11 +77,32 @@ img {
 .inverted {
 	-webkit-filter: invert(100%);
 }
-ul {
-	margin-top: 2%;
-	margin-left: 10%;
-	min-height: 100px;
-	width: 60%;
+.grayscale {
+	-webkit-filter: grayscale(1);
+}
+.sepia {
+	-webkit-filter: sepia(1);
+}
+.saturated {
+	-webkit-filter: saturate(8);
+}
+.hue-rotate {
+	-webkit-filter: hue-rotate(90deg);
+}
+.opaque {
+	-webkit-filter: opacity(.2);
+}
+.brighten {
+	-webkit-filter: brightness(3);
+}
+.contrasted {
+	-webkit-filter: contrast(4);
+}
+.blurred {
+	-webkit-filter: blur(5px);
+}
+.shadowed {
+	-webkit-filter: drop-shadow(16px 16px 10px rgba(0,0,0,0.9));
 }
 textarea {
 	float: left;
@@ -63,18 +110,26 @@ textarea {
 	margin-top: 2%;
 	margin-left: 10%;
 }
-</style>
+.text-danger {
+	color: #d9534f;
+}
+table {
+	margin-right: 30%;
+	margin-top: 2%;
+	float: right;
+}
+th {
+	border: 1px solid green;
 
-</head>
-<body>
+}
+</style>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 <script src="js/jquery.js"></script>
 <script src="js/jquery.ui.js"></script>
 <script src="js/jquery.ui.multidraggable.js"></script>
 <script src="js/lodash.js"></script>
 <script src="js/backbone.js"></script>
 <script src="js/starch.js"></script>
-
-
 <script src="js/starch.array.js"></script>
 <script src="js/starch.canvas.js"></script>
 <script src="js/starch.element.js"></script>
@@ -84,14 +139,12 @@ textarea {
 <script src="js/starch.random.js"></script>
 <script src="js/starch.string.js"></script>	
 
-
-
-
 <script src="codes.js"></script>	
 
-
-
 <script>
+// https://fortawesome.github.io/Font-Awesome/icons/
+
+
 var log = console.log.bind(console);
 (function () {
 	var i, len, methods = Object.getOwnPropertyNames(Array.prototype);
@@ -104,42 +157,285 @@ var log = console.log.bind(console);
 		}
 	}
 }());
-
 $(function() {
-	var i, j, k, d, e, li, ul = $("ul").eq(0)
-	for(i = 0; i < codes.length; i++) {
-		d = create("div", {"class":"glyph", "style": "height: 99px; width: 100px; border: 0px"})
-		for(j = 0; j < 3; j++) {
-			for(k = 0; k < 3; k++) {
-				e = create("div", {"class":"pixel", "style": "height: 29.33px; width: 29.33px; border: 2px solid green"})
-				d.append(e)
+
+	var /*i, */j, k, d, e, li, ol = $("ol").eq(0), wrench = true, code, sp
+
+	function reset() {
+		ol.empty()
+		codes.each(function(v, key, i) {
+			d = create("div", {"class":"glyph", "gloss":key, "code":v, "index":i})
+			for(j = 0; j < 3; j++) {
+				for(k = 0; k < 3; k++) {
+					e = create("div", {"class":"pixel", "style": "height: 29.33px; width: 29.33px; border: 2px solid green"})
+					// f = $(`<span class='info'><span>${key}</span>&nbsp;<span>${i}</span><span>_</span></span>`)
+					// d.append(f)
+					d.append(e)
+				}
 			}
-		}
-		li = create("li")
-		li.append(d)
-		ul.append(li);
-	}
-	var code
-	for(i = 0; i < codes.length; i++) {
-		code = codes[i]
-		for(j = 0; j < code.length; j++) {
-			if (code[j] === "1") {
-				$(".glyph").eq(i).find(".pixel").eq(j).click()
+			li = create("li")
+			li.append(d)
+			ol.append(li)
+		})
+		wrench = true
+		codes.each(function(code, glyph, i) {
+			for(j = 0; j < code.length; j++) {
+				if (code[j] === "1") {
+					$(".glyph").eq(i).find(".pixel").eq(j).addClass("true")
+				}
 			}
-		}
+		})
+		wrench = false
 	}
+	reset()
+
+
+	// $("textarea").val(codeString)
+
+
+
+	wrench = false
+
 	$("img").click(function() {
 		$(this).toggleClass("inverted")
 	})
-	// $("textarea").val(codeString)
-})
-$(document).on("click", ".pixel", function() {
-	$(this).toggleClass("on")
+
+	var arrows = true
+	$("#arrows").click(function() {
+		arrows = !arrows
+		$(this).parent().toggleClass("on")
+		$("ol").sortable({disabled: arrows})
+		$("table tbody").sortable({disabled: arrows})
+	})
+
+	$("#edit").click(function() {
+		wrench = !wrench
+		$(this).parent().toggleClass("on")
+	})
+
+	var exchange = false
+	$("#exchange").click(function() {
+		exchange = !exchange
+		$(this).parent().toggleClass("on")
+	})
+	$(document).on("click", ".pixel", function(e) {
+		if (exchange === true) {
+			$(e.target).parent().find(".pixel").toggleClass("true")
+		}
+	})	
+	
+	$(document).on("click", ".pixel", function() {
+		if (wrench === true) {
+			$(this).toggleClass("true")
+		}
+	})
+
+	var objectUngroup = false
+	$("#object-ungroup").click(function() {
+		objectUngroup = !objectUngroup
+		$("ol").selectable({disabled: objectUngroup})
+
+		$(this).parent().toggleClass("on")
+	})
+
+
+	$("#random").click(function() {
+		var $li = $("ol li")
+		$li.sort(function(a, b) {
+			return Math.random() >= 0.5 ? 1 : -1
+		})
+		$("ol").empty().append($li)
+
+		var $tr = $("table tr")
+		$tr.sort(function(a, b) {
+			return Math.random() >= 0.5 ? 1 : -1
+		})
+		$("tbody").empty().append($tr)
+	})
+	var sortAlphaAsc = function(a, b) {
+		if ($(a).find(".glyph").attr("gloss") > $(b).find(".glyph").attr("gloss")) return 1
+		else if ($(a).find(".glyph").attr("gloss") < $(b).find(".glyph").attr("gloss")) return -1
+		else return 0
+	}
+	var sortNumericAsc = function(a, b) {
+		return $(a).find(".glyph").attr("index") - $(b).find(".glyph").attr("index")
+	}
+	var sortAlphaDesc = function(a, b) {
+		if ($(a).find(".glyph").attr("gloss") > $(b).find(".glyph").attr("gloss")) return -1
+		else if ($(a).find(".glyph").attr("gloss") < $(b).find(".glyph").attr("gloss")) return 1
+		else return 0
+	}
+	var sortNumericDesc = function(a, b) {
+		return $(b).find(".glyph").attr("index") - $(a).find(".glyph").attr("index")
+	}
+	function sortList(alg) {
+		var $li = $("ol li")
+		$li.sort(alg)
+		$("ol").empty().append($li)		
+	}
+	function sortTable(alg) {
+		var $tr = $("table tr")
+		$tr.sort(alg)
+		$("tbody").empty().append($tr)
+	}
+	$("#sort-alpha-asc").click(function() {
+		sortList(sortAlphaAsc)
+		sortTable(sortAlphaAsc)
+	})
+	$("#sort-numeric-asc").click(function() {
+		sortList(sortNumericAsc)
+		sortTable(sortNumericAsc)
+	})
+	$("#sort-alpha-desc").click(function() {
+		sortList(sortAlphaDesc)
+		sortTable(sortAlphaDesc)
+	})
+	$("#sort-numeric-desc").click(function() {
+		sortList(sortNumericDesc)
+		sortTable(sortNumericDesc)
+	})
+	$("#sort-alpha-asc, #sort-numeric-asc, #sort-alpha-desc, #sort-numeric-desc").mousedown(function() {
+		$(this).parent().addClass("on")
+	}).mouseup(function() {
+		$(this).parent().removeClass("on")
+	})
+	$("#table").click(function() {
+		toTable()
+		$("#table").parent().addClass("on")
+		$("#list").parent().removeClass("on")
+	})
+	$("#list").click(function() {
+		toList()
+		$("#table").parent().removeClass("on")
+		$("#list").parent().addClass("on")
+	})
+
+	var $glyphs, $table, $tbody, $tr, $th, $td
+	function toList() {
+		$glyphs = $(".glyph").clone()
+		$("ol").hide()
+		$table = create("table")
+		$tbody = create("tbody")
+		$glyphs.each(function(a, b, c) {
+			$tr = create("tr")
+			$th = create("th", {class: "info"})
+			$th.innerHTML = $(this).attr("gloss")+" "+$(this).attr("index")
+			$td = create("td")
+			$td.appendChild($(this)[0])
+			$tr.append($th)
+			$tr.append($td)
+			$tbody.append($tr)
+		})
+		$table.append($tbody)
+		$("ol").after($table)
+	}
+	function toTable() {
+		$("table").remove()
+		$("ol").show()//.empty()
+	}
+	$("#history").parent().click(function() {
+		reset()
+	})
+
+
+	$(document).on("click", ".glyph, .pixel", function(e) {
+		if (!e.shiftKey) {
+			$(".selected").removeClass("selected")
+
+		}
+		$(e.target).parents("li").addClass("selected")
+		$(e.target).parents("tr").children().addClass("selected")
+	})
+
+
+	$("#trash").parent().click(function() {
+
+		$(".selected").parent("tr").remove()
+		$(".selected").remove()
+	})
 })
 
 </script>
-<img class="inverted" src="marain.png" />
-<ul></ul>
+</head>
+<body>
+<ul>
+	<li><i id="edit" class="fa fa-edit fa-2x"></i></li>
+	<li><i id="exchange" class="fa fa-exchange fa-2x"></i></li>
+	<li><i id="object-ungroup" class="fa fa-object-ungroup fa-2x"></i></li>
+	<li><i id="trash" class="fa fa-trash fa-2x"></i></li>
+	<li><i id="arrows" class="fa fa-arrows fa-2x"></i></li>
+	<li><i id="random" class="fa fa-random fa-2x"></i></li>
+	<li><i id="clone" class="fa fa-clone fa-2x"></i></li>
+	<li><i id="undo" class="fa fa-undo fa-2x"></i></li>
+	<li><i id="repeat" class="fa fa-repeat fa-2x"></i></li>
+	<li><i id="list" class="fa fa-list fa-2x"></i></li>
+	<li class="on"><i id="table" class="fa fa-table fa-2x"></i></li>
+	<li><i id="sort-alpha-asc" class="fa fa-sort-alpha-asc fa-2x"></i></li>
+	<li><i id="sort-numeric-asc" class="fa fa-sort-numeric-asc fa-2x"></i></li>
+	<li><i id="sort-alpha-desc" class="fa fa-sort-alpha-desc fa-2x"></i></li>
+	<li><i id="sort-numeric-desc" class="fa fa-sort-numeric-desc fa-2x"></i></li>
+
+	<li><i id="history" class="fa fa-history fa-2x"></i></li>
+	<!-- <li><i id="wrench" class="fa fa-wrench fa-2x"></i></li> -->
+	<!-- <li><i id="arrows-h" class="fa fa-arrows-h fa-2x"></i></li> -->
+	<!-- <li><i id="arrows-v" class="fa fa-arrows-v fa-2x"></i></li> -->
+	<!-- <li><i id="balance-scale" class="fa fa-balance-scale fa-2x"></i></li> -->
+	<!-- <li><i id="ban" class="fa fa-ban fa-2x"></i></li> -->
+	<!-- <li><i id="barcode" class="fa fa-barcode fa-2x"></i></li> -->
+	<!-- <li><i id="bars" class="fa fa-bars fa-2x"></i></li> -->
+	<!-- <li><i id="bell" class="fa fa-bell fa-2x"></i></li> -->
+	<!-- <li><i id="bolt" class="fa fa-bolt fa-2x"></i></li> -->
+	<!-- <li><i id="book" class="fa fa-book fa-2x"></i></li> -->
+	<!-- <li><i id="bookmark" class="fa fa-bookmark fa-2x"></i></li> -->
+	<!-- <li><i id="bookmark" class="fa fa-bookmark-o fa-2x"></i></li> -->
+	<!-- <li><i id="check" class="fa fa-check fa-2x"></i></li> -->
+	<!-- <li><i id="check-square" class="fa fa-check-square fa-2x"></i></li> -->
+	<!-- <li><i id="clone" class="fa fa-clone fa-2x"></i></li> -->
+	<!-- <li><i id="close" class="fa fa-close fa-2x"></i></li> -->
+	<!-- <li><i id="compass" class="fa fa-compass fa-2x"></i></li> -->
+	<!-- <li><i id="cog" class="fa fa-cog fa-2x"></i></li> -->
+	<!-- <li><i id="crop" class="fa fa-crop fa-2x"></i></li> -->
+	<!-- <li><i id="cube" class="fa fa-cube fa-2x"></i></li> -->
+	<!-- <li><i id="cubes" class="fa fa-cubes fa-2x"></i></li> -->
+
+	<!-- <li><i id="filter" class="fa fa-filter fa-2x"></i></li> -->
+	<!-- <li><i id="fire" class="fa fa-fire fa-2x"></i></li> -->
+	<!-- <li><i id="flash" class="fa fa-flash fa-2x"></i></li> -->
+
+	<!-- <li><i id="magic" class="fa fa-magic fa-2x"></i></li> -->
+
+	<!-- <li><i id="plus-square" class="fa fa-plus-square fa-2x"></i></li> -->
+	<!-- <li><i id="plus-square-o" class="fa fa-plus-square-o fa-2x"></i></li> -->
+
+	<!-- <li><i id="sliders" class="fa fa-sliders fa-2x"></i></li> -->
+	<!-- <li><i id="sort" class="fa fa-sort fa-2x"></i></li> -->
+	<!-- <li><i id="sort-asc" class="fa fa-sort-asc fa-2x"></i></li> -->
+	<!-- <li><i id="sort-dsc" class="fa fa-sort-desc fa-2x"></i></li> -->
+	<!-- <li><i id="spinner" class="fa fa-spinner fa-2x"></i></li> -->
+	<!-- <li><i id="square" class="fa fa-square fa-2x"></i></li> -->
+	<!-- <li><i id="star" class="fa fa-star fa-2x"></i></li> -->
+	<!-- <li><i id="star-half" class="fa fa-star-half fa-2x"></i></li> -->
+	<!-- <li><i id="star-o" class="fa fa-star-o fa-2x"></i></li> -->
+	<!-- <li><i id="times" class="fa fa-times fa-2x"></i></li> -->
+
+	<!-- <li><i id="toggle-down" class="fa fa-toggle-down fa-2x"></i></li> -->
+	<!-- <li><i id="toggle-left" class="fa fa-toggle-left fa-2x"></i></li> -->
+	<!-- <li><i id="toggle-off" class="fa fa-toggle-off fa-2x"></i></li> -->
+	<!-- <li><i id="toggle-on" class="fa fa-toggle-on fa-2x"></i></li> -->
+	<!-- <li><i id="toggle-right" class="fa fa-toggle-right fa-2x"></i></li> -->
+	<!-- <li><i id="toggle-up" class="fa fa-toggle-up fa-2x"></i></li>  -->
+
+
+<!--
+<li><div class="fa-stack fa-lg">
+<i class="fa fa-camera fa-stack-1x"></i>
+<i class="fa fa-ban fa-stack-2x text-danger"></i>
+</div></li> 
+-->
+	<!-- <li><i class="fa fa- fa-2x"></i></li> -->
+</ul>
+<img class="inverted" src="img/marain.png" />
+<ol></ol>
 <br />
 <!-- <textarea></textarea> -->
 </body>

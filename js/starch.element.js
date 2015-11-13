@@ -3,6 +3,10 @@ Element.define("create", function(tag, arg) {
     if (arg) {
         var attrs = arg
         for (var attr in attrs) {
+            if (attr === "innerHTML") {
+                elem.innerHTML = attrs[attr]
+                continue
+            }
             elem.setAttribute([attr], attrs[attr])
         }
     }

@@ -7,51 +7,53 @@
 		padding: 0px;
 	}
 	body {
-		background-color: black;
+		width: 100%;
+		height: 100%;
+		font-family: calibri;
 	}
 	table, td {
 		border-collapse: collapse;
 	}
-	canvas {
-		margin: 5px;
+	div {
+		max-width: 50%;
+		max-height: 50%;
 	}
-	ul, li {
+	ul, ol, li {
 		list-style-type: none;
-		float: left;
-	}
-	li {
-		border: 2px solid green;
-	}
-	.selected {
-		border: 2px solid red;
-	}
-	#container {
-		margin-top: 5%;
-		margin-left: 10%;
-		border: 2px solid green;
 	}
 	ul {
-		margin-top: 2%;
-		margin-left: 10%;
-		min-height: 100px;
-		width: 80%;
+		width: 119;
+		position: absolute;
+		left: 300px;
+		top: 300px;
+		max-height: 400px;
+		overflow-y: scroll;
+		overflow-x: hidden;
 	}
-/*	ul:nth-child(1) {border: 2px solid red;}
-	ul:nth-child(2) {border: 2px solid blue;}
-	ul:nth-child(3) {border: 2px solid yellow;}
-	ul:nth-child(4) {border: 2px solid white;}*/
+	li {
+		border: 1px solid black;
+		text-align: right;
+	}
+	input[type=number] {
+		width: 70%;
+		border: none;
+		text-align: right;
+	}
+	input[type=number]::-webkit-inner-spin-button,
+	input[type=number]::-webkit-outer-spin-button { 
+		opacity: 1;
+	}
+	.fa {
+		vertical-align: -20%;
+		margin: 3px;
+	}
 	</style>
-
-</head>
-<body>
 	<script src="js/jquery.js"></script>
 	<script src="js/jquery.ui.js"></script>
-	<script src="js/jquery.ui.multidraggable.js"></script>
+	<script src="js/jquery.position.js"></script>
 	<script src="js/lodash.js"></script>
 	<script src="js/backbone.js"></script>
 	<script src="js/starch.js"></script>
-
-	
 	<script src="js/starch.array.js"></script>
 	<script src="js/starch.canvas.js"></script>
 	<script src="js/starch.element.js"></script>
@@ -59,9 +61,9 @@
 	<script src="js/starch.is.js"></script>	
 	<script src="js/starch.number.js"></script>
 	<script src="js/starch.random.js"></script>
-	<!--<script src="js/starch.range.js"></script>-->
 	<script src="js/starch.string.js"></script>	
 	<script src="glyphs.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
 	<script>
 
@@ -76,155 +78,148 @@
 			}
 		}
 	}());
-
-
-	// function saveLocal() {
-	// 	var ids = $("li").map(function() {
-	// 		return $(this).attr("index");
-	// 	})
-	// 	log(ids)
-	// 	localStorage.setItem("ids", JSON.stringify(ids))
-	// 	log(JSON.stringify(ids))
-	// 	// Array.interval("[0.."+(Math.pow(2, edges.length) - 1)+"]")
-	// }
-
-	glyphs
-	//.slice(1000, 1060)
-	// .slice(0, 256)
-	.each(function(g) {
-		$("body").append(g.render());
-	})
-
-	$("canvas").each(function() {
-		$(this).wrap("<li></li>");
-	})
-	$("li").wrapAll("<ul id='container'></ul>");
-
-	$("ul").sortable({tolerance: "pointer", revert: "250", connectWith: "ul"}).disableSelection();
-
-	var i = 0;
-	$("li").each(function() {
-		$(this).attr("index", i++)
-	})
-
-	// $("li").multidraggable();
-	// $("ul").droppable({
-	//	activeClass: "ui-state-active",
-	//	hoverClass: "ui-state-hover",
-	//	drop: function () {
-	//		$(this).addClass("ui-state-highlight")
-	//	}
-	// });
-
-	var multi = true, last, wid, ind;
-	var nav = {
-		37: function(e) {
-			last = last.prev()
-			last.addClass("selected");
-			// if (!multi) old.removeClass("selected");
-		},
-		38: function(e) {
-			wid = Math.floor($("ul").width() / last.outerWidth()) 
-			ind = last.index()-wid+1
-			last = $("li:nth-child("+ind+")");
-			last.addClass("selected");
-			// if (!multi) old.removeClass("selected");
-		},
-		39: function(e) {
-			last = last.next()
-			last.addClass("selected");
-			// if (!multi) old.removeClass("selected");
-		},
-		40: function(e) {
-			wid = Math.floor($("ul").width() / last.outerWidth())
-			ind = last.index()+wid+1
-			last = $("li:nth-child("+ind+")");
-			last.addClass("selected");
-			// if (!multi) old.removeClass("selected");
+	(function($){
+		$.fn.center = function() {
+			$(this).css("position", "absolute")
+			$(this).css("top",	($(window).height() - $(this).height()) / 2 + $(window).scrollTop()	+ "px")
+			$(this).css("left", ($(window).width()	- $(this).width())	/ 2 + $(window).scrollLeft() + "px")
+			return $(this)
 		}
+	})(jQuery);
+	var seed = new Random()
+	var code = "".pad(16, 1)
+	var lines = [
+	[10, 10, 10, 50], [10, 50, 10, 90],
+	[10, 90, 50, 90], [50, 90, 90, 90],
+	[90, 90, 90, 50], [90, 50, 90, 10],
+	[90, 10, 50, 10], [50, 10, 10, 10],
+	[10, 50, 50, 50], [50, 50, 90, 50],
+	[50, 10, 50, 50], [50, 50, 50, 90],
+	[10, 10, 50, 50], [50, 50, 90, 90],
+	[10, 90, 50, 50], [50, 50, 90, 10],
+	[10, 50, 50, 10], [50, 10, 50, 90],
+	[10, 50, 50, 10], [50, 10, 90, 50],
+	[90, 50, 50, 90], [50, 90, 10, 50],
+	[10, 30, 50, 30], [50, 30, 90, 30],
+	[30, 10, 30, 50], [30, 50, 30, 90],
+	[70, 10, 70, 50], [70, 50, 70, 90],
+	[10, 70, 50, 70], [50, 70, 90, 70],
+	[10, 30, 30, 10], [30, 10, 50, 30],
+	[50, 30, 70, 10], [70, 10, 90, 30],
+	[10, 30, 30, 50], [30, 50, 50, 30],
+	[50, 30, 70, 50], [70, 50, 90, 30],
+	[10, 70, 30, 50], [30, 50, 50, 70],
+	[50, 70, 70, 50], [70, 50, 90, 70],
+	[10, 70, 30, 90], [30, 90, 50, 70],
+	[50, 70, 70, 90], [70, 90, 90, 70],
+	]
+	var circles = [
+	[30, 30, 20],
+	[70, 30, 20],
+	[30, 70, 20],
+	[70, 70, 20],
+	[50, 50, 10],
+	[50, 50, 20],
+	[50, 50, 30],
+	[50, 50, 40],
+	]
+
+	var glyphs = []
+	function populate(n, pad) {
+		var result = [], x, $ul = $("ul")
+		$ul.find("li:gt(1)").remove()
+		Array.interval("[0.."+(Math.pow(2, n) - 1)+"]").each(function(i) {
+			x = pad ? i.base(2).pad(n) : i.base(2)
+			result.push(x);
+			$ul.append(create("li", {innerHTML: x}))
+		})
+		return result
 	}
-	$(document).on("keydown", function(e) {
-		// multi = !multi//e.shiftKey;
+	function rndr(canvas, level) {
+		level = level || 46
+		canvas.square(10, 10, 80, {width: 2})
+
+		lines.each(function(a, i) {
+			level--
+			if (level < 0) return
+			canvas.line(a[0], a[1], a[2], a[3], {/*color: seed.color(),*/ width: 2})
+		})
+		circles.each(function(a, i) {
+			level--
+			if (level < 0) return
+			canvas.circle(a[0], a[1], a[2], {width: 2})
+		})
+		return canvas
+	}
+	$(function() {
+		populate(4, true)
+
+		$("#power").mouseup(function() {
+			populate($(this).val(), $("#pad").is("[class*='check']"))
+		})
+
+		var canvas
+		Array.interval("[8..46]").each(function(i) {
+			canvas = rndr(new Canvas(), i)
+			canvas.attach($("div")[0])
+		})
+
+		canvas = rndr(new Canvas())
+		canvas.attach($("ul li")[0])
+
+
+		$("div").center()
+		$("div canvas").draggable()
+
+
+
+		$("#pad").click(function() {
+			if ($(this).hasClass("fa-check-square-o")) {
+				$(this).removeClass("fa-check-square-o")
+				$(this).addClass("fa-square-o")
+				populate($("#power").val(), false)
+
+			}
+			else {
+				$(this).removeClass("fa-square-o")
+				$(this).addClass("fa-check-square-o")
+				populate($("#power").val(), true)
+
+			}
+		})
+		var cl
+		$(document).on("dblclick", "div canvas", function(e) {
+			cl = rndr(new Canvas($(this).clone()))
+			cl.attach($("div")[0])
+			$("div canvas").draggable()
+		})
+		$("ul canvas").draggable({helper: "clone"})
+		// $("ul canvas").mousedown(function(e) {
+		// 	// cl = rndr(new Canvas($(this).clone()))
+		// 	// cl.attach()
+
+		// 	// log($(this).top(), $(this).left())
+		// 	// $(cl.element()).left($(this).left()).top($(this).top()).css("display", "absolute")
+		// 	// $(cl.element()).css("top", $(this).top()).css("left", $(this).left()).css("position", "absolute")
+		// 	// $(cl.element()).draggable()
+		// 	// .mousemove(function() {
+		// 	// 	$(cl.element()).css("top", $(this).top()).css("left", $(this).left())
+		// 	// })
+		// 	log(e)
+		// })
 	})
-	$(document).on("keydown", function(e) {
-		if (e.which === 46) {
-			$(".selected").hide()
-			// saveLocal();
-			return
-		}
-		var that = $(".selected canvas")[0], g = "", h = "", k = e.which;
-		if (k < 37 || k > 40) {
-			return;
-		}
-		e.preventDefault();
-
-		if (!e.ctrlKey && !e.metaKey && !e.shiftKey) {
-			nav[k](e);
-			return;
-		}
-		g = $(that).attr("hash");
-
-		// left arrow	37
-		// up arrow		38
-		// right arrow	39
-		// down arrow	40
-
-		// flip on x-axis
-		if ((k === 38 || k === 40) && e.ctrlKey) {
-			// h = g.swap(0, 1).swap(2, 4).swap(5, 6).swap(7, 9).swap(10, 11) 
-			h  += g[10] + g[11] 
-			+ g[ 7] + g[ 8] + g[ 9] 
-				+ g[ 5] + g[ 6] 
-			+ g[ 2] + g[ 3] + g[ 4] 
-				+ g[ 0] + g[ 1]
-		}
-		// flip on y-axis
-		if ((k === 37 || k === 39) && e.ctrlKey) {
-			// h = g.swap(0, 10).swap(1, 11).swap(2, 7).swap(3, 8).swap(4, 9)
-			h  += g[ 0] + g[ 1] 
-			+ g[ 4] + g[ 3] + g[ 2] 
-				+ g[ 6] + g[ 5] 
-			+ g[ 9] + g[ 8] + g[ 7] 
-				+ g[11] + g[10]
-		}	
-
-		// turn clockwise
-		if ((k === 39 || k === 38) && e.shiftKey) {
-			h  += g[ 7] + g[ 2] 
-			+ g[10] + g[ 5] + g[ 0] 
-				+ g[ 8] + g[ 3] 
-			+ g[11] + g[ 6] + g[ 1] 
-				+ g[ 9] + g[ 4]
-		}	
-		// turn counter-clockwise
-		if ((k === 37 || k === 40) && e.shiftKey) {
-			h  += g[ 4] + g[ 9] 
-			+ g[ 1] + g[ 6] + g[11] 
-				+ g[ 3] + g[ 8] 
-			+ g[ 0] + g[ 5] + g[10] 
-				+ g[ 2] + g[ 7]
-		}	
-
-
-		var flip = new Glyph(h);
-		$(that).parent().append(flip.render())
-		$(that).remove()
-	})
-	.on("click", "canvas", function(e) {
-		e.preventDefault();
-		last = $(e.target).parent();
-		// if (!multi) $(".selected").removeClass("selected");
-		if ($(e.target).parent().hasClass("selected")) {
-			$(this).parent().removeClass("selected");
-			return
-		}
-		$(this).parent().addClass("selected");
-	})
-
 	</script>
-<!-- 	<ul></ul>
-	<ul></ul>
-	<ul></ul>
-	<ul></ul> -->
+
+
+</head>
+<body>
+<div></div>
+
+<ul>
+<li style="height: 100px; width: 100px;"></li>
+<li><i id="pad" class="fa fa-lg fa-check-square-o"></i><input type="number" value="4" id="power" min="1" /></li>
+</ul>
+<!-- <input type="text" value="1111111111" /> -->
 </body>
+
 </html>

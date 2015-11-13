@@ -63,25 +63,26 @@ Object.prototype.extend({
 		}, this)
 		return result
 	},
-	"each": function(f) {
-		for (var i in this) {
-			f && this.hasProperty(i) && f.call(this, this[i], i)
-		}
-		return this
-	},
+	// "each": function(f) {
+	// 	for (var i in this) {
+	// 		f && this.hasProperty(i) && f.call(this, this[i], i)
+	// 	}
+	// 	return this
+	// },
 	"alert": function() {
 		return alert(this)
-	},
-	"toString": function() {
-		return Object.prototype.toString.call(this)
 	}
+	// ,
+	// "toString": function() {
+	// 	return Object.prototype.toString.call(this)
+	// }
 })
 Object.prototype.define("forEach", function (callback, scope) {
-	var collection = this
+	var collection = this, index = 0
 	if (Object.prototype.toString.call(collection) === '[object Object]') {
 		for (var prop in collection) {
 			if (Object.prototype.hasOwnProperty.call(collection, prop)) {
-			callback.call(scope, collection[prop], prop, collection)
+				callback.call(scope, collection[prop], prop, index++, collection)
 			}
 		}
 	} 
@@ -91,7 +92,7 @@ Object.prototype.define("forEach", function (callback, scope) {
 		}
 	}
 })
-
+Object.prototype.define("each", Object.prototype.forEach)
 Object.define("setPrototypeOf", function(obj, proto) {
 	obj.__proto__ = proto
 	return obj

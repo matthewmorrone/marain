@@ -68,7 +68,7 @@ Random.prototype.between = function(low, high, digits) {
     floor = +low,
     range = +(high - low),
     random = Math.random() * range + floor;
-  return random.toFixed(d);
+  return Math.floor(random.toFixed(d))
 };
 Random.prototype.within = function(range) {
   return Math.floor(range[0] + Math.random() * (range[1] + 1 - range[0]));
