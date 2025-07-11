@@ -61,8 +61,6 @@
             padding: 1.5rem;
             border-radius: 0.75rem;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 1.5rem;
             z-index: 10;
         }
 
@@ -116,27 +114,86 @@
             background-color: #2980b9;
         }
 
+        /* Mobile specific styles for TOC */
         @media (max-width: 1023px) {
             .toc-container {
                 width: 100%;
                 order: -1;
                 /* Place TOC above content on mobile */
+                max-height: fit-content;
+                /* Allow button to dictate height */
+                overflow: hidden;
+                /* Hide anything outside */
+                transition: all 0.3s ease-out;
+                /* Smooth transition for minimization */
+                position: relative;
+                /* Default position on mobile */
+                top: auto;
+                /* Override sticky top */
+                left: auto;
+                /* Override fixed left */
+                transform: none;
+                /* Override fixed transform */
+                margin-bottom: 1.5rem;
+                /* Maintain original margin */
             }
 
-            .toc-list {
+            .toc-container h2 {
+                /* Hide the H2 on mobile */
+                display: none;
+            }
+
+            #tocContentWrapper {
+                /* Initially hide the content wrapper on mobile */
                 max-height: 0;
                 overflow: hidden;
                 transition: max-height 0.3s ease-out;
             }
 
-            .toc-list.active {
+            #tocContentWrapper.active {
+                /* Show content wrapper when active */
                 max-height: 500px;
                 /* Adjust as needed for content */
                 overflow-y: auto;
                 /* Enable scrolling for the list on mobile if too long */
             }
+
+            /* Class for scrolled state on mobile */
+            .toc-container.toc-scrolled {
+                position: fixed;
+                /* Make it fixed when scrolled */
+                bottom: 1rem;
+                /* Position at bottom */
+                left: 50%;
+                transform: translateX(-50%);
+                width: auto;
+                /* Auto width to fit content */
+                white-space: nowrap;
+                /* Prevent text wrapping */
+                margin-bottom: 0;
+                /* Remove margin when fixed */
+                padding: 0.75rem 1rem;
+                /* Smaller padding when minimized */
+                border-radius: 9999px;
+                /* Make it pill-shaped */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .toc-container.toc-scrolled #tocContentWrapper {
+                display: none !important;
+                /* Force hide the whole list content when scrolled and minimized */
+            }
+
+            .toc-container.toc-scrolled .toc-toggle-button {
+                margin-bottom: 0;
+                /* Remove bottom margin for the button */
+            }
         }
 
+        /* Desktop specific styles for TOC */
         @media (min-width: 1024px) {
             .toc-container {
                 flex: 0 0 300px;
@@ -145,11 +202,21 @@
                 /* Max height relative to viewport, accounting for top/bottom margin */
                 overflow-y: auto;
                 /* Enable scrolling for the TOC container itself on desktop */
+                position: sticky;
+                /* Sticky on desktop */
+                top: 1.5rem;
+                /* Sticky position */
             }
 
             .toc-toggle-button {
                 display: none;
                 /* Hide button on desktop */
+            }
+
+            #tocContentWrapper {
+                /* Ensure content wrapper is always visible on desktop */
+                max-height: none;
+                overflow: visible;
             }
         }
 
@@ -234,7 +301,7 @@
                 <button class="toc-toggle-button" id="tocToggleButton">
                     <i class="fas fa-bars"></i> Table of Contents
                 </button>
-                <div id="tocListContainer">
+                <div id="tocContentWrapper">
                     <h2>Table of Contents</h2>
                     <ul class="toc-list" id="tocList">
                         <li><a href="#birth-of-the-culture">1. Birth of The Culture</a></li>
@@ -262,7 +329,7 @@
                         <li><a href="#identity-and-naming">23. Identity and Naming</a></li>
                         <li><a href="#stories-for-another-time">24. Stories for Another Time</a></li>
                         <li><a href="#cosmology-and-hyperspace">25. Cosmology and Hyperspace</a></li>
-                        <li><a href="#marain">26. Marain</a></li>
+                        <li><a href="#marain">Marain</a></li>
                         <li><a href="#copyright">Copyright</a></li>
                     </ul>
                 </div>
@@ -281,8 +348,6 @@
 
                 <h2 id="planetary-limitations">Planetary Limitations</h2>
                 <p>The Culture, in its history and its on-going form, is an expression of the idea that the nature of space itself determines the type of civilisations which will thrive there.</p>
-                <p>The thought processes of a tribe, a clan, a country or a nation-state are essentially two-dimensional, and the nature of their power depends on the same flatness. Territory is all-important; resources, living-space, lines of communication; all are determined by the nature of the plane (that the plane is in fact a sphere is irrelevant here); that surface, and the fact the species concerned are bound to it during their evolution, determines the mind-set of a ground-living species. The mind-set of an aquatic or avian species is, of course, rather different.</p>
-
                 <h2 id="space-bound-possibilities">Space-Bound Possibilities</h2>
                 <p>Essentially, the contention is that our currently dominant power systems cannot long survive in space; beyond a certain technological level a degree of anarchy is arguably inevitable and anyway preferable.</p>
                 <p>To survive in space, ships/habitats must be self-sufficient, or very nearly so; the hold of the state (or the corporation) over them therefore becomes tenuous if the desires of the inhabitants conflict significantly with the requirements of the controlling body. On a planet, enclaves can be surrounded, besieged, attacked; the superior forces of a state or corporation - hereafter referred to as hegemonies - will tend to prevail. In space, a break-away movement will be far more difficult to control, especially if significant parts of it are based on ships or mobile habitats. The hostile nature of the vacuum and the technological complexity of life support mechanisms will make such systems vulnerable to outright attack, but that, of course, would risk the total destruction of the ship/habitat, so denying its future economic contribution to whatever entity was attempting to control it.</p>
@@ -438,35 +503,84 @@
     </div>
 
     <script>
-        // JavaScript for mobile TOC toggle
+        // JavaScript for mobile TOC toggle and scroll behavior
         const tocToggleButton = document.getElementById('tocToggleButton');
-        const tocListContainer = document.getElementById('tocList');
+        const tocContentWrapper = document.getElementById('tocContentWrapper');
+        const tocList = document.getElementById('tocList');
+        const tocContainer = document.querySelector('.toc-container');
 
-        if (tocToggleButton && tocListContainer) {
+        if (tocToggleButton && tocContentWrapper && tocList && tocContainer) {
+            // Toggle functionality
             tocToggleButton.addEventListener('click', () => {
-                tocListContainer.classList.toggle('active');
+                // Toggle 'active' class on the content wrapper to expand/collapse
+                tocContentWrapper.classList.toggle('active');
                 const icon = tocToggleButton.querySelector('i');
-                if (tocListContainer.classList.contains('active')) {
+
+                if (tocContentWrapper.classList.contains('active')) {
                     icon.classList.remove('fa-bars');
                     icon.classList.add('fa-times');
+                    // When expanded, ensure it's not in minimized (scrolled) state
+                    tocContainer.classList.remove('toc-scrolled');
                 } else {
                     icon.classList.remove('fa-times');
                     icon.classList.add('fa-bars');
+                    // When collapsed, check scroll position to apply minimized state if scrolled
+                    if (window.innerWidth < 1024 && window.scrollY > 50) {
+                        tocContainer.classList.add('toc-scrolled');
+                    }
                 }
             });
 
             // Close TOC when a link is clicked on mobile
-            tocListContainer.addEventListener('click', (event) => {
+            tocList.addEventListener('click', (event) => {
                 if (event.target.tagName === 'A' && window.innerWidth < 1024) {
-                    tocListContainer.classList.remove('active');
+                    tocContentWrapper.classList.remove('active'); // Collapse the wrapper
                     const icon = tocToggleButton.querySelector('i');
                     icon.classList.remove('fa-times');
                     icon.classList.add('fa-bars');
+                    // After clicking a link, if scrolled, minimize the TOC
+                    if (window.scrollY > 50) {
+                        tocContainer.classList.add('toc-scrolled');
+                    }
                 }
             });
+
+            // Scroll behavior for mobile TOC minimization
+            window.addEventListener('scroll', () => {
+                if (window.innerWidth < 1024) { // Only apply on mobile
+                    if (window.scrollY > 50) { // If scrolled down more than 50px
+                        // Only minimize if the TOC is not currently open
+                        if (!tocContentWrapper.classList.contains('active')) {
+                            tocContainer.classList.add('toc-scrolled');
+                        }
+                    } else { // If scrolled back to top
+                        tocContainer.classList.remove('toc-scrolled');
+                    }
+                }
+            });
+
+            // Initial check on load and resize to set correct scroll state
+            const applyInitialScrollState = () => {
+                if (window.innerWidth < 1024) {
+                    // If already scrolled down on load and TOC is not active, minimize it
+                    if (window.scrollY > 50 && !tocContentWrapper.classList.contains('active')) {
+                        tocContainer.classList.add('toc-scrolled');
+                    } else {
+                        tocContainer.classList.remove('toc-scrolled');
+                    }
+                } else {
+                    // Ensure toc-scrolled is removed on desktop
+                    tocContainer.classList.remove('toc-scrolled');
+                    // Ensure content wrapper is visible on desktop
+                    tocContentWrapper.classList.remove('active'); // Remove active class if it was set on mobile
+                }
+            };
+
+            window.addEventListener('load', applyInitialScrollState);
+            window.addEventListener('resize', applyInitialScrollState); // Re-evaluate on resize
         }
 
-        // Smooth scrolling for anchor links
+        // Smooth scrolling for anchor links (existing functionality)
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
