@@ -7,13 +7,16 @@
     <title>A Few Notes on The Culture</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8f8f8;
             color: #333;
             line-height: 1.6;
+        }
+
+        ul {
+            margin-top: 0px;
         }
 
         .container {
@@ -23,7 +26,6 @@
         }
 
         .header {
-            background-color: #fff;
             padding: 1.5rem;
             border-radius: 0.75rem;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
@@ -55,12 +57,10 @@
             }
         }
 
-        /* Table of Contents Styling */
         .toc-container {
             background-color: #fff;
             padding: 1.5rem;
             border-radius: 0.75rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
             z-index: 10;
         }
 
@@ -68,17 +68,17 @@
             font-size: 1.5rem;
             font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 1rem;
+            /* margin-bottom: 1rem; */
         }
 
         .toc-list {
             list-style: none;
             padding: 0;
-            margin: 0;
+            /* margin-top: 10px; */
         }
 
         .toc-list li {
-            margin-bottom: 0.5rem;
+            /* margin-bottom: 0.5rem; */
         }
 
         .toc-list a {
@@ -87,7 +87,6 @@
             border-radius: 0.5rem;
             color: #3498db;
             text-decoration: none;
-            transition: background-color 0.2s ease, color 0.2s ease;
         }
 
         .toc-list a:hover {
@@ -106,124 +105,64 @@
             justify-content: center;
             gap: 0.5rem;
             cursor: pointer;
-            transition: background-color 0.2s ease;
-            margin-bottom: 1rem;
+            width: -webkit-fill-available;
+            border: 0px;
         }
 
         .toc-toggle-button:hover {
             background-color: #2980b9;
         }
 
-        /* Mobile specific styles for TOC */
         @media (max-width: 1023px) {
-            .toc-container {
-                width: 100%;
-                order: -1;
-                /* Place TOC above content on mobile */
-                max-height: fit-content;
-                /* Allow button to dictate height */
-                overflow: hidden;
-                /* Hide anything outside */
-                transition: all 0.3s ease-out;
-                /* Smooth transition for minimization */
-                position: relative;
-                /* Default position on mobile */
-                top: auto;
-                /* Override sticky top */
-                left: auto;
-                /* Override fixed left */
-                transform: none;
-                /* Override fixed transform */
-                margin-bottom: 1.5rem;
-                /* Maintain original margin */
-            }
-
-            .toc-container h2 {
-                /* Hide the H2 on mobile */
-                display: none;
-            }
-
             #tocContentWrapper {
-                /* Initially hide the content wrapper on mobile */
                 max-height: 0;
                 overflow: hidden;
-                transition: max-height 0.3s ease-out;
             }
 
             #tocContentWrapper.active {
-                /* Show content wrapper when active */
                 max-height: 500px;
-                /* Adjust as needed for content */
                 overflow-y: auto;
-                /* Enable scrolling for the list on mobile if too long */
             }
 
-            /* Class for scrolled state on mobile */
-            .toc-container.toc-scrolled {
-                position: fixed;
-                /* Make it fixed when scrolled */
-                bottom: 1rem;
-                /* Position at bottom */
-                left: 50%;
-                transform: translateX(-50%);
-                width: auto;
-                /* Auto width to fit content */
-                white-space: nowrap;
-                /* Prevent text wrapping */
-                margin-bottom: 0;
-                /* Remove margin when fixed */
-                padding: 0.75rem 1rem;
-                /* Smaller padding when minimized */
-                border-radius: 9999px;
-                /* Make it pill-shaped */
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            .toc-container {
+                margin-left: auto;
+                margin-right: auto;
+                transition: width 0.3s ease, margin 0.3s ease;
+                position: sticky;
+                top: 20px;
+                z-index: 20;
+                background-color: white;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
             }
 
-            .toc-container.toc-scrolled #tocContentWrapper {
-                display: none !important;
-                /* Force hide the whole list content when scrolled and minimized */
-            }
-
-            .toc-container.toc-scrolled .toc-toggle-button {
-                margin-bottom: 0;
-                /* Remove bottom margin for the button */
+            .toc-container.scrolled {
+                width: 50%;
             }
         }
 
-        /* Desktop specific styles for TOC */
         @media (min-width: 1024px) {
             .toc-container {
                 flex: 0 0 300px;
-                /* Fixed width for TOC on desktop */
                 max-height: calc(100vh - 3rem);
-                /* Max height relative to viewport, accounting for top/bottom margin */
                 overflow-y: auto;
-                /* Enable scrolling for the TOC container itself on desktop */
                 position: sticky;
-                /* Sticky on desktop */
                 top: 1.5rem;
-                /* Sticky position */
             }
 
             .toc-toggle-button {
                 display: none;
-                /* Hide button on desktop */
             }
 
             #tocContentWrapper {
-                /* Ensure content wrapper is always visible on desktop */
                 max-height: none;
                 overflow: visible;
             }
         }
 
-        /* Main Content Styling */
         .main-content {
             background-color: #fff;
             padding: 1.5rem;
+            padding-top: 0px;
             border-radius: 0.75rem;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
             flex-grow: 1;
@@ -298,43 +237,43 @@
 
         <div class="content-area">
             <aside class="toc-container">
-                <button class="toc-toggle-button" id="tocToggleButton">
-                    <i class="fas fa-bars"></i> Table of Contents
-                </button>
-                <div id="tocContentWrapper">
-                    <h2>Table of Contents</h2>
-                    <ul class="toc-list" id="tocList">
-                        <li><a href="#birth-of-the-culture">1. Birth of The Culture</a></li>
-                        <li><a href="#a-lived-in-galaxy">2. A Lived-In Galaxy</a></li>
-                        <li><a href="#planetary-limitations">3. Planetary Limitations</a></li>
-                        <li><a href="#space-bound-possibilities">4. Space-Bound Possibilities</a></li>
-                        <li><a href="#rebellion-and-hegemony">5. Rebellion and Hegemony</a></li>
-                        <li><a href="#the-planned-economy">6. The Planned Economy</a></li>
-                        <li><a href="#post-scarcity">7. Post-Scarcity</a></li>
-                        <li><a href="#artificial-intelligence">8. Artificial Intelligence</a></li>
-                        <li><a href="#fully-automated-gay-luxury-space-communism">9. Fully Automated Gay Luxury Space Communism</a></li>
-                        <li><a href="#education-and-philosophy">10. Education and Philosophy</a></li>
-                        <li><a href="#ai-design">11. AI Design</a></li>
-                        <li><a href="#the-drive-to-explore">12. The Drive to Explore</a></li>
-                        <li><a href="#cyclicity-of-fashion">13. Cyclicity of Fashion</a></li>
-                        <li><a href="#genetic-engineering">14. Genetic Engineering</a></li>
-                        <li><a href="#drug-glands-and-reproduction">15. Drug Glands and Reproduction</a></li>
-                        <li><a href="#gender-equality">16. Gender Equality</a></li>
-                        <li><a href="#birth-and-death">17. Birth and Death</a></li>
-                        <li><a href="#ships-minds-and-contact">18. Ships, Minds, and Contact</a></li>
-                        <li><a href="#orbitals-and-habitats">19. Orbitals and Habitats</a></li>
-                        <li><a href="#manners-laws-and-crime">20. Manners, Laws, and Crime</a></li>
-                        <li><a href="#politics-and-daily-life">21. Politics and Daily Life</a></li>
-                        <li><a href="#genofixing-and-cross-species-compatibility">22. Genofixing and Cross-species Compatibility</a></li>
-                        <li><a href="#identity-and-naming">23. Identity and Naming</a></li>
-                        <li><a href="#stories-for-another-time">24. Stories for Another Time</a></li>
-                        <li><a href="#cosmology-and-hyperspace">25. Cosmology and Hyperspace</a></li>
-                        <li><a href="#marain">Marain</a></li>
-                        <li><a href="#copyright">Copyright</a></li>
-                    </ul>
+                <div class="toc-inner">
+                    <button class="toc-toggle-button" id="tocToggleButton">
+                        <i class="fas fa-bars"></i> Table of Contents
+                    </button>
+                    <div id="tocContentWrapper">
+                        <ul class="toc-list" id="tocList">
+                            <li><a href="#birth-of-the-culture">1. Birth of The Culture</a></li>
+                            <li><a href="#a-lived-in-galaxy">2. A Lived-In Galaxy</a></li>
+                            <li><a href="#planetary-limitations">3. Planetary Limitations</a></li>
+                            <li><a href="#space-bound-possibilities">4. Space-Bound Possibilities</a></li>
+                            <li><a href="#rebellion-and-hegemony">5. Rebellion and Hegemony</a></li>
+                            <li><a href="#the-planned-economy">6. The Planned Economy</a></li>
+                            <li><a href="#post-scarcity">7. Post-Scarcity</a></li>
+                            <li><a href="#artificial-intelligence">8. Artificial Intelligence</a></li>
+                            <li><a href="#fully-automated-gay-luxury-space-communism">9. Fully Automated Gay Luxury Space Communism</a></li>
+                            <li><a href="#education-and-philosophy">10. Education and Philosophy</a></li>
+                            <li><a href="#ai-design">11. AI Design</a></li>
+                            <li><a href="#the-drive-to-explore">12. The Drive to Explore</a></li>
+                            <li><a href="#cyclicity-of-fashion">13. Cyclicity of Fashion</a></li>
+                            <li><a href="#genetic-engineering">14. Genetic Engineering</a></li>
+                            <li><a href="#drug-glands-and-reproduction">15. Drug Glands and Reproduction</a></li>
+                            <li><a href="#gender-equality">16. Gender Equality</a></li>
+                            <li><a href="#birth-and-death">17. Birth and Death</a></li>
+                            <li><a href="#ships-minds-and-contact">18. Ships, Minds, and Contact</a></li>
+                            <li><a href="#orbitals-and-habitats">19. Orbitals and Habitats</a></li>
+                            <li><a href="#manners-laws-and-crime">20. Manners, Laws, and Crime</a></li>
+                            <li><a href="#politics-and-daily-life">21. Politics and Daily Life</a></li>
+                            <li><a href="#genofixing-and-cross-species-compatibility">22. Genofixing and Cross-species Compatibility</a></li>
+                            <li><a href="#identity-and-naming">23. Identity and Naming</a></li>
+                            <li><a href="#stories-for-another-time">24. Stories for Another Time</a></li>
+                            <li><a href="#cosmology-and-hyperspace">25. Cosmology and Hyperspace</a></li>
+                            <li><a href="#marain">Marain</a></li>
+                            <li><a href="#copyright">Copyright</a></li>
+                        </ul>
+                    </div>
                 </div>
             </aside>
-
             <main class="main-content">
                 <p>FIRSTLY, AND MOST IMPORTANTLY: THE CULTURE DOESN'T REALLY EXIST. IT ONLY EXISTS IN MY MIND AND THE MINDS OF THE PEOPLE WHO'VE READ ABOUT IT.</p>
                 <p>That having been made clear:</p>
@@ -503,91 +442,61 @@
     </div>
 
     <script>
-        // JavaScript for mobile TOC toggle and scroll behavior
+        // JavaScript for mobile TOC toggle
         const tocToggleButton = document.getElementById('tocToggleButton');
         const tocContentWrapper = document.getElementById('tocContentWrapper');
         const tocList = document.getElementById('tocList');
-        const tocContainer = document.querySelector('.toc-container');
 
-        if (tocToggleButton && tocContentWrapper && tocList && tocContainer) {
+        if (tocToggleButton && tocContentWrapper && tocList) {
             // Toggle functionality
             tocToggleButton.addEventListener('click', () => {
-                // Toggle 'active' class on the content wrapper to expand/collapse
                 tocContentWrapper.classList.toggle('active');
                 const icon = tocToggleButton.querySelector('i');
-
                 if (tocContentWrapper.classList.contains('active')) {
                     icon.classList.remove('fa-bars');
                     icon.classList.add('fa-times');
-                    // When expanded, ensure it's not in minimized (scrolled) state
-                    tocContainer.classList.remove('toc-scrolled');
                 } else {
                     icon.classList.remove('fa-times');
                     icon.classList.add('fa-bars');
-                    // When collapsed, check scroll position to apply minimized state if scrolled
-                    if (window.innerWidth < 1024 && window.scrollY > 50) {
-                        tocContainer.classList.add('toc-scrolled');
-                    }
                 }
             });
 
             // Close TOC when a link is clicked on mobile
             tocList.addEventListener('click', (event) => {
                 if (event.target.tagName === 'A' && window.innerWidth < 1024) {
-                    tocContentWrapper.classList.remove('active'); // Collapse the wrapper
+                    tocContentWrapper.classList.remove('active');
                     const icon = tocToggleButton.querySelector('i');
                     icon.classList.remove('fa-times');
                     icon.classList.add('fa-bars');
-                    // After clicking a link, if scrolled, minimize the TOC
-                    if (window.scrollY > 50) {
-                        tocContainer.classList.add('toc-scrolled');
-                    }
                 }
             });
-
-            // Scroll behavior for mobile TOC minimization
-            window.addEventListener('scroll', () => {
-                if (window.innerWidth < 1024) { // Only apply on mobile
-                    if (window.scrollY > 50) { // If scrolled down more than 50px
-                        // Only minimize if the TOC is not currently open
-                        if (!tocContentWrapper.classList.contains('active')) {
-                            tocContainer.classList.add('toc-scrolled');
-                        }
-                    } else { // If scrolled back to top
-                        tocContainer.classList.remove('toc-scrolled');
-                    }
-                }
-            });
-
-            // Initial check on load and resize to set correct scroll state
-            const applyInitialScrollState = () => {
-                if (window.innerWidth < 1024) {
-                    // If already scrolled down on load and TOC is not active, minimize it
-                    if (window.scrollY > 50 && !tocContentWrapper.classList.contains('active')) {
-                        tocContainer.classList.add('toc-scrolled');
-                    } else {
-                        tocContainer.classList.remove('toc-scrolled');
-                    }
-                } else {
-                    // Ensure toc-scrolled is removed on desktop
-                    tocContainer.classList.remove('toc-scrolled');
-                    // Ensure content wrapper is visible on desktop
-                    tocContentWrapper.classList.remove('active'); // Remove active class if it was set on mobile
-                }
-            };
-
-            window.addEventListener('load', applyInitialScrollState);
-            window.addEventListener('resize', applyInitialScrollState); // Re-evaluate on resize
         }
 
         // Smooth scrolling for anchor links (existing functionality)
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-
                 document.querySelector(this.getAttribute('href')).scrollIntoView({
                     behavior: 'smooth'
                 });
+            });
+        });
+
+        // Scroll logic for .toc-container.scrolled, with logging
+        document.addEventListener('DOMContentLoaded', function () {
+            const tocContainer = document.querySelector('.toc-container');
+            if (!tocContainer) return;
+            window.addEventListener('scroll', () => {
+                const top = tocContainer.getBoundingClientRect().top;
+                const stickyOffset = parseInt(getComputedStyle(tocContainer).top, 10) || 0;
+                console.log('toc top:', top);
+                if (top <= stickyOffset) {
+                    tocContainer.classList.add('scrolled');
+                    console.log('Added .scrolled');
+                } else {
+                    tocContainer.classList.remove('scrolled');
+                    console.log('Removed .scrolled');
+                }
             });
         });
     </script>
